@@ -1,0 +1,59 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <meta http-equiv="Content-Security-Policy" content="default-src * data: gap: https://ssl.gstatic.com; style-src * 'unsafe-inline'; script-src * 'unsafe-inline' 'unsafe-eval'">
+  <script src="components/loader.js"></script>
+  <script src="lib/onsenui/js/onsenui.min.js"></script>
+
+  <link rel="stylesheet" href="components/loader.css">
+  <link rel="stylesheet" href="lib/onsenui/css/onsenui.css">
+  <link rel="stylesheet" href="lib/onsenui/css/onsen-css-components.css">
+  <link rel="stylesheet" href="css/style.css">
+
+  <script>
+    ons.ready(function() {
+      console.log("Onsen UI is ready!");
+    });
+  </script>
+  <script src="js/app.js"></script>
+</head>
+<body>
+  <ons-page>
+    <ons-list>
+      <ons-list-header>WiFiデモ</ons-list-header>
+      <ons-list-item>
+        <div class="center">
+            WiFiのステータス
+          </div>
+          <div class="right">
+            <ons-switch id="status" value="on" onclick="setStatus(event)" checked></ons-switch>
+          </div>
+        </div>
+      </ons-list-item>
+      <ons-list-item>
+        <div class="center">
+          現在接続中のSSID
+        </div>
+        <div class="right">
+          <span id="current_ssid"></span>
+        </div>
+      </ons-list-item>
+      <ons-list-item>
+        <h3>接続先のSSIDを選択してください</h3>
+      </ons-list-item>
+      <ons-list-item>
+        <ons-select id="ssid">
+        </ons-select> <ons-icon size="20px" onclick="scanWifi()" icon="md-refresh-sync"></ons-icon>
+      </ons-list-item>
+      <ons-list-item>
+        <ons-input id="password" placeholder="パスワード"  modifier="underbar" />
+      </ons-list-item>
+      <ons-list-item>
+        <ons-button modifier="large" onclick="changeAP()">接続</ons-button>
+      </ons-list-item>
+    </ons-list>
+  </ons-page>
+</body>
+</html>
