@@ -1,5 +1,3 @@
-// This is a JavaScript file
-
 const deviceready = () => {
   // WiFiのステータスをチェック
   checkWifiStatus();
@@ -19,74 +17,84 @@ const deviceready = () => {
 // 現在接続中のWiFiネットワークを取得
 const getWiFiName = () => {
   WifiWizard2.getCurrentSSID(
-    ssid => $('#current_ssid').text(ssid),
-    err => alert(JSON.stringify(err))
+    (ssid) => {
+      $('#current_ssid').text(ssid);
+    },
+    (err) => {
+      alert('getCurrentSSID Error:' + JSON.stringify(err));
+    }
   );
 };
 
 // WiFiをスキャンしてドロップダウンを更新する
 const scanWifi = () => {
   const select = $('#ssid select');
-  scanWifiAsync()
-    .then((ssids) => {
+  // 既知のネットワーク情報を取得
+  WifiWizard2.listNetworks(
+    (ssids) => {
       select.empty();
       for (let ssid of ssids) {
         ssid = ssid.replace(/^"(.*)"$/, '$1');
         select.append(`<option value="${ssid}">${ssid}</option>`);
       }
-    }, (err) => alert(JSON.stringify(err))
+    },
+    (err) => {
+      alert('listNetworks Error:' + JSON.stringify(err));
+    }
   );
-}
-
-// 既知のネットワーク情報とスキャンしたWiFi情報を合わせて返す
-const scanWifiAsync = () => {
-  let results = [];
-  return new Promise((res, rej) => {
-    // 既知のネットワーク情報を取得
-    WifiWizard2.listNetworks(
-      ssids => {
-        results = ssids;
-        // 周囲のAPを調べる
-        WifiWizard2.startScanAsync();
-        // 調べた結果を取得
-        WifiWizard2.getScanResults(
-          ssids => res(results.concat(ssids)),
-          err => rej(err)
-        );
-      },
-      (err) => rej(err)
-    );
-  });
 }
 
 // WiFiの状態を調べてスイッチに反映
 const checkWifiStatus = () => {
   WifiWizard2.isWifiEnabled(
     (status) => {
-      $('#status').prop('checked', status)
+      $('#status').prop('checked', status);
     },
-    (err) => {}
+    (err) => {
+      alert('isWifiEnabled Error:' + JSON.stringify(err));
+    }
   );
 }
 
 // スイッチの状態をWiFi設定に反映
 const setStatus = (e) => {
-  WifiWizard2.setWifiEnabledAsync($("#status").prop('checked'));
+  WifiWizard2.setWifiEnabled(
+    $("#status").prop('checked'),
+    (result) => {
+      alert(`Wifiを${$("#status").prop('checked') ? 'ON' : 'OFF'}にしました`);
+    },
+    (err) => {
+      alert('setWifiEnabled Error:' + JSON.stringify(err));
+    }
+  );
 }
 
 // アクセスポイントを変更する処理
 const changeAP = (e) => {
   const ssid = $('#ssid').val();
   if (ons.platform.isAndroid()) {
-    WifiWizard2.androidConnectNetwork(ssid,
-      (status) => alert('接続しました'),
-      (err) => alert(JSON.stringify(err))
+    WifiWizard2.androidConnectNetwork(
+      ssid,
+      (result) => {
+        alert(result);
+        getWiFiName();
+      },
+      (err) => {
+        alert('androidConnectNetwork Error:' + JSON.stringify(err));
+      }
     );
   } else {
     const password = $('#password').val();
-    WifiWizard2.iOSConnectNetwork(ssid, password,
-      (status) => alert('接続しました'),
-      (err) => alert(JSON.stringify(err))
+    WifiWizard2.iOSConnectNetwork(
+      ssid, 
+      password,
+      (result) => {
+        alert(result);
+        getWiFiName();
+      },
+      (err) => {
+        alert('iOSConnectNetwork Error:' + JSON.stringify(err));
+      }
     );
   }
 }
