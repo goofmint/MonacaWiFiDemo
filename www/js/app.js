@@ -16,12 +16,12 @@ const deviceready = () => {
 
 // 現在接続中のWiFiネットワークを取得
 const getWiFiName = () => {
-  WifiWizard2.getCurrentSSID(
+  WifiWizard2.getConnectedSSID(
     (ssid) => {
       $('#current_ssid').text(ssid);
     },
     (err) => {
-      alert('getCurrentSSID Error:' + JSON.stringify(err));
+      alert('getConnectedSSID Error:' + JSON.stringify(err));
     }
   );
 };
